@@ -22,17 +22,18 @@ public class Ksmallest {
 
     public int[] kSmallestOnline(int[] array, int k) {
         if (array == null) return null;
-        if (k == 0) return new int[]{};
+        if (array.length == 0 || k == 0) return new int[0];
 
         //if(k > array.length) throw new Exception ("Too many elements required.");
 
         //no need to implement heapify yourself, use API
         PriorityQueue<Integer> queue = new PriorityQueue<>(Collections.reverseOrder());
-        for (int i = 0; i < k; i++) {
-            queue.offer(array[i]);
-        }
 
-        for (int i = k; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
+
+            if (i < k) {
+                queue.offer(array[i]);
+            }
             if (array[i] < queue.peek()) { // WRONG : NPE when k = 0
                 queue.poll();
                 queue.offer(array[i]);
@@ -40,8 +41,8 @@ public class Ksmallest {
         }
 
         int[] res = new int[k];
-        for (int i = 1; i <= k; i++) {
-            res[k - i] = queue.poll();
+        for (int i = k - 1; i >= 0; i--) {
+            res[i] = queue.poll();
         }
         return res;
 
@@ -56,7 +57,7 @@ public class Ksmallest {
 
         if (array == null) return null;
         // if(k > array.length) throw new Exception("To many elements required.");
-        if (k == 0) return new int[]{};
+        if (array.length == 0 || k == 0) return new int[0];
 
         PriorityQueue<Integer> queue = new PriorityQueue<>();
         for (int i : array) {
@@ -97,21 +98,14 @@ public class Ksmallest {
     public int[] kSmallest(int[] array, int k) {
 
         if (array == null) return null;
-        if (k == 0) return new int[]{};
+        if (array.length == 0 || k == 0) return new int[0];
 
         //copy an array to do in-place quickSort
-        int[] arr = new int[array.length];
-
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = array[i];
-        }
-
+        int[] arr = Arrays.copyOf(array, array.length);
         quickSelect(arr, 0, arr.length - 1, k);
 
-        int[] res = new int[k];
-        for (int i = 0; i < k; i++) {
-            res[i] = arr[i];
-        }
+        int[] res = Arrays.copyOf(arr, k);
+        //res is unsorted
         Arrays.sort(res);
         return res;
     }
@@ -132,7 +126,7 @@ public class Ksmallest {
 
     private int partition(int[] arr, int left, int right) {
 
-        // right is the pivot
+        // right-most is the pivot
         int l = left;
         int r = right - 1;
 
