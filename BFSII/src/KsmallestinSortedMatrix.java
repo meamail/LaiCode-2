@@ -45,12 +45,10 @@ public class KsmallestinSortedMatrix {
         int cols = matrix[0].length;
 
         // Best First Search, need a min heap on the value of each cells
-        PriorityQueue<Cell> minHeap = new PriorityQueue<>(k, new Comparator<Cell>() {
-            @Override
-            public int compare(Cell c1, Cell c2) {
-                if (c1.value == c2.value) return 0;
-                return c1.value < c2.value ? -1 : 1;
-            }
+        PriorityQueue<Cell> minHeap = new PriorityQueue<>(k, (Cell c1, Cell c2) ->
+        {
+            if (c1.value == c2.value) return 0;
+            return c1.value < c2.value ? -1 : 1;
         }
         );
         // all the generated cells will be marked true to avoid multiple generation
