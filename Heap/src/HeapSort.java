@@ -17,7 +17,7 @@ public class HeapSort {
 
     // in-place heap sort
     //Time:  O(n) heapify + O(nlogn) percolateDown
-    // Space : O(1)
+    // Space : O(n)
     public void heapSort(int[] arr) {
 
         if (arr == null || arr.length == 0) return;
