@@ -1,6 +1,19 @@
 import java.util.*;
 
+/**
+ * Given a composition with different kinds of words,
+ * return a list of the top K most frequent words in the composition.
+ * a list of words ordered from most frequent one to least frequent one
+ * Composition = ["a", "a", "b", "b", "b", "b", "c", "c", "c", "d"], top 2 frequent words are [“b”, “c”]
+ * Time : O(n) for-loop + O(klogk) offer + O(n-klogk) poll + O(klogk) poll
+ * Time : O(nlogk)
+ * Space: O(n) hashmap + O(k) minheap = O(n)
+ */
+
 public class TopKFrequent {
+
+
+    //
     public String[] topK(String[] combo, int k) {
 
         // corner case
@@ -23,59 +36,41 @@ public class TopKFrequent {
 
         }
 
-        Map.Entry<String, Integer>[] arr = hashmap.entrySet().toArray(new Map.Entry[0]);
 
         //use minHeap to get top k ele
 
+        // No need to pre-process k >= arr.length
 
-        if (k >= arr.length) {// return the whole array
-
-            // return the whole array
-
-            Arrays.sort(arr, (m1, m2) -> {
-
-                if (m1.getValue() == m2.getValue()) return 0;
-                return (int) m1.getValue() < (int) m2.getValue() ? 1 : -1;
-            });
-
-
-            String[] res = new String[arr.length];
-            for (int i = 0; i < arr.length; i++) {
-
-                res[i] = arr[i].getKey();
-
-            }
-
-            return res;
-        }
+        // use a minHeap to store ele
 
         PriorityQueue<Map.Entry<String, Integer>> minHeap = new PriorityQueue<>(k,
-                (Map.Entry<String, Integer> m1, Map.Entry<String, Integer> m2) -> {
 
-                    if (m1.getValue() == m2.getValue()) return 0;
-                    return m2.getValue() < m1.getValue() ? -1 : 1;
-                });
 
-        for (int i = 0; i < arr.length; i++) {
+                // compare by getValue in natural order
+                // if in reverse order, use lambda expression((obj o1, obj o2) -> {return ...})
+                Comparator.comparing(Map.Entry<String, Integer>::getValue)
+        );
 
-            if (i < k) {
+        for (Map.Entry<String, Integer> entry : hashmap.entrySet()) {// IMPORTANT
 
-                minHeap.offer(arr[i]);
+            if (minHeap.size() < k) {
+
+                minHeap.offer(entry);
             } else {
 
                 int value = minHeap.peek().getValue();
-                if (arr[i].getValue() > value) {
+                if (entry.getValue() > value) {
                     minHeap.poll();
-                    minHeap.offer(arr[i]);
+                    minHeap.offer(entry);
 
                 }
             }
 
         }
 
-        String res[] = new String[k];
+        String res[] = new String[minHeap.size()];
 
-        for (int i = k - 1; i >= 0; i--) {
+        for (int i = minHeap.size() - 1; i >= 0; i--) {
 
             res[i] = minHeap.poll().getKey();
         }
