@@ -1,3 +1,11 @@
+/**
+ * Reverse the words in a sentence.
+ * “I love Google” → “Google love I”
+ * Words are separated by single space
+ * There are no heading or tailing white spaces
+ */
+
+
 public class ILoveYahoo {
 
     public static void main(String[] args) {
@@ -13,8 +21,11 @@ public class ILoveYahoo {
 
         if (input == null || input.length() == 0) return input;
         char[] str = input.toCharArray();
+
+        // reverse the whole sentence
         reverse(str, 0, str.length - 1);
 
+        // reverse words
         int left = 0;
         for (int i = 1; i <= str.length; i++) {
             if (i == str.length || str[i] == ' ') {//WRONG: i == str.length must be at the front
