@@ -9,6 +9,7 @@ public class StringReplace {
 
         StringReplace sr = new StringReplace();
         System.out.print(sr.replace("unohmnonononoh", "no", "b"));
+        System.out.print(sr.APIReplace("unohmnonononoh", "no", "b"));
 
 
     }
@@ -119,5 +120,22 @@ public class StringReplace {
         }
         return true;
 
+    }
+
+    // use API to do the replacement; not in-place
+    public String APIReplace(String input, String source, String target) {
+        StringBuilder sb = new StringBuilder();
+        int fromIndex = 0;
+        int matchIndex = input.indexOf(input, fromIndex);
+        while (matchIndex != -1) {
+
+            sb.append(input, fromIndex, matchIndex).append(target);
+            fromIndex = matchIndex + source.length();
+            matchIndex = input.indexOf(input, fromIndex);
+
+        }
+
+        sb.append(input, fromIndex, input.length());
+        return sb.toString();
     }
 }
