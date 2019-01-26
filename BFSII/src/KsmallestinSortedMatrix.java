@@ -5,7 +5,9 @@
  * k >=0 && k < M*N
  */
 
+import java.io.ObjectStreamException;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 
 /**
@@ -37,6 +39,21 @@ public class KsmallestinSortedMatrix {
             this.col = col;
             this.value = value;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Cell)) return false;
+            Cell c = (Cell) o;
+            return this.row == c.row && this.col == c.col && this.value == c.value;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return row * 31 * 31 + col * 31 + value;
+        }
+
     }
 
 
@@ -74,6 +91,7 @@ public class KsmallestinSortedMatrix {
 
                 minHeap.offer(new Cell(curr.row, curr.col + 1, matrix[curr.row][curr.col + 1]));
                 visited[curr.row][curr.col + 1] = true;
+
             }
 
         }
@@ -82,6 +100,50 @@ public class KsmallestinSortedMatrix {
         return minHeap.peek().value;
 
 
+    }
+
+    /**
+     * Solution with HashSet: use less space
+     * Need to override .equals() and . hashCode()
+     * Time : O(klogk) pop + O(2klogk)offer = O(klogk)
+     * Space: O(k) minHeap + O(k) HashSet = O(k)
+     *
+     * @param matrix
+     * @param k
+     * @return
+     */
+
+    public int kthSmallest_WithHashSet(int[][] matrix, int k) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        PriorityQueue<Cell> minHeap = new PriorityQueue<>(k, new Comparator<Cell>() {
+            @Override
+            public int compare(Cell c1, Cell c2) {
+                if (c1.value == c2.value) return 0;
+                return (c1.value < c2.value) ? -1 : 1;
+            }
+        });
+
+        HashSet<Cell> set = new HashSet<>(k);
+
+        minHeap.offer(new Cell(0, 0, matrix[0][0]));
+
+        for (int i = 0; i < k - 1; i++) {
+            Cell cur = minHeap.poll();
+
+            if (cur.row + 1 < rows &&
+                    set.add(new Cell(cur.row + 1, cur.col, matrix[cur.row + 1][cur.col]))) {
+                minHeap.offer(new Cell(cur.row + 1, cur.col, matrix[cur.row + 1][cur.col]));
+            }
+
+            if (cur.col + 1 < cols &&
+                    set.add(new Cell(cur.row, cur.col + 1, matrix[cur.row][cur.col + 1]))) {
+                minHeap.offer(new Cell(cur.row, cur.col + 1, matrix[cur.row][cur.col + 1]));
+            }
+
+        }
+        return minHeap.peek().value;
     }
 
 
